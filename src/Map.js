@@ -1,64 +1,87 @@
 import React, {Component} from 'react';
-import { Map, Marker, GoogleApiWrapper, InfoWindow } from 'google-maps-react';
-
+import './App.css';
+import { GoogleMap, Marker, withGoogleMap, InfoWindow } from 'react-google-maps';
+/* global google */
 
 class MapContainer extends Component {
 	constructor(props) {
-		super(props)
+		super(props);
 		this.state = {
 			showInfo: false,
 			clickedMarker: {},
 			selectedPlace: {},
-			markerObjects: []
-		}
-		this.onMarkerClick = this.onMarkerClick.bind(this)
-		this.onMarkerMounted = element => {
-      		this.setState(prevState => ({
-        	markerObjects: [...prevState.markerObjects, element.marker]
-      			}))
-    	};
-  	}
-	
+			markerObjects: [],
+			initialList: [
+        {
+          name:'Dignita Vondelpark',
+          position: {lat: 52.351852, lng: 4.857204},
+          cat: 'res',
+        }, 
+        { 
+          name: 'Roots',
+          position: {lat: 52.3533437, lng: 4.8535822},
+          cat: 'res'
+        },
+        {
+          name: 'Anne&Max Amsterdam Zuid',
+          position: {lat: 52.3519133, lng: 4.8538804},
+          cat: 'res'
+        } 
+      ],
+    };
+		this.onMarkerClick = this.onMarkerClick.bind(this);
+  }
+	componentDidMount() {
+		console.log(this.state.initialList)
+    // let service = new google.maps.places.PlacesService(GoogleMap);
+    // let request = {
+    //   location: {lat: 52.370216, lng: 4.895168},
+    //   radius: 500,
+    //   type: ['store', 'cafe', 'restaurant'],
+    //   keyword: ['vegan', 'organic', 'vegetarian', 'green']
+    // }
+    // function callback(status, results) {
+    //   if(status === google.maps.places.PlacesService.OK) {
+    //     for(var i = 0; i< results.length; i++) {
+    //       new google.maps.Marker({
+    //         map: map,
+    //         postion: place.geometry.location
+    //       })
+    //     }
+    //   }
+    // }
+    // service.nearbySearch(request, callback)
+    
+    
+	}
 	onMarkerClick(props, marker, e){
 		this.setState({
 			selectedPlace: props,
 			clickedMarker: marker,
 			showInfo: true,
 		})
-		console.log(this.state.clickedMarker)
+		console.log(this.props.order)
 	}
-	
-	render() {
 
+	render() {
+		// const {initialList = []} = this.props;
     	return (
     	<div className='container'>
-     		<Map 
-     		google={this.props.google}
+      <withGoogleMap props>
+     		<GoogleMap 
+     		google={window.google}
       		zoom={12}
-      		initialCenter={{lat: 52.370216, lng: 4.895168}}>
-    <Marker 
-      		className='marker'
+      		initialCenter={{lat: 52.370216, lng: 4.895168}}
+      		>
+      		{this.state.initialList.map(item => (
+      			<Marker 
+     		key={item.name}
+     		className='marker'
       		onClick={this.onMarkerClick}
-     		name={'Anne&Max Amsterdam Zuid'} 
-      		position={{lat: 52.3519133, lng: 4.8538804}}
-      		cat={'cafè'}
-      		/>
-	      	<Marker 
-	      	className='marker'
-	      	onClick={this.onMarkerClick}
-	      	name={'Dignita VondelPark'} 
-	     	position={{lat: 52.351852, lng: 4.857204}}
-	      	cat={'cafè'}/>
-	      <Marker 
-	      className='marker'
-	      onClick={this.onMarkerClick}
-	      name={'ROOTS'} 
-	      position={{lat: 52.3533437, lng: 4.8535822}}
-	      cat={'cafè'}
-
-	      />
+      		name={item.name} 
+      		position={item.position}
+      		cat={item.cat} />))}
       		
-
       			<InfoWindow 
 	      		marker={this.state.clickedMarker}
 	      		visible={this.state.showInfo}
@@ -66,19 +89,15 @@ class MapContainer extends Component {
       				<div>
       					<p>{this.state.selectedPlace.name}</p>
       				</div>
-     		 	</InfoWindow>
-     		 	
-      		</Map>
+     		 	</InfoWindow>	
+      		</GoogleMap>
+          </withGoogleMap>
       	</div>
-      	)
+     	)
     }
 }
 
 
      	
-    
 
-
-export default GoogleApiWrapper({
-  apiKey: ('AIzaSyDVCA3WbyUDIxb9PCdD4Nnt8OEOtG8Ajcg')
-})(MapContainer)
+export default MapContainer

@@ -1,66 +1,61 @@
-import React from 'react';
-import { GoogleApiWrapper, InfoWindow, Map, Marker } from 'google-maps-react';
+import React, { Component } from 'react';
+import './App.css';
+/* global google */ 
 
-class GMap extends React.Component {
-  constructor(props) {
+
+let markers = [];
+
+class Map extends Component {
+  constructor(props){
     super(props);
     this.state = {
-      showingInfoWindow: false,
-      activeMarker: {},
-      selectedPlace: {}
+      list: [markers],
     }
-    // binding this to event-handler functions
-    this.onMarkerClick = this.onMarkerClick.bind(this);
-    this.onMapClick = this.onMapClick.bind(this);
   }
-  onMarkerClick = (props, marker, e) => {
-    this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true
+  componentDidMount() {
+    console.log(this.props.initialList)
+    let map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 52.370216, lng: 4.895168},
+      zoom: 13,
     });
-  }
-  onMapClick = (props) => {
-    if (this.state.showingInfoWindow) {
-      this.setState({
-        showingInfoWindow: false,
-        activeMarker: null
+    let infowindow = new google.maps.InfoWindow();
+    let service = new google.maps.places.PlacesService(map);
+    let request = {
+      location: {lat: 52.370216, lng: 4.895168},
+      radius: 1500,
+      type: ['store'|| 'cafe'|| 'restaurant'|| 'supermarket' || 'concept store' ],
+      keyword: ['vegan'|| 'organic' ||'vegetarian' || 'green' || 'sustainable' || 'bio']
+    };
+    function callback(results, status) {
+      console.log(status, results);
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i += 1 ) {
+          markers.push(results[i]);
+          addMarker(results[i]);
+        }
+      }
+    }
+    service.nearbySearch(request, callback)
+    function addMarker(place) {
+      var marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location  
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(place.name);
+        infowindow.open(map, this);
       });
     }
+    console.log(this.state.list)
   }
   render() {
-    const style = {
-      width: '50vw',
-      height: '75vh',
-      'marginLeft': 'auto',
-      'marginRight': 'auto'
-    }
     return (
-      <Map
-        item
-        xs = { 12 }
-        style = { style }
-        google = { this.props.google }
-        onClick = { this.onMapClick }
-        zoom = { 14 }
-        initialCenter = {{ lat: 39.648209, lng: -75.711185 }}
-      >
-        <Marker
-          onClick = { this.onMarkerClick }
-          title = { 'Changing Colors Garage' }
-          position = {{ lat: 39.648209, lng: -75.711185 }}
-          name = { 'Changing Colors Garage' }
-        />
-        <InfoWindow
-          marker = { this.state.activeMarker }
-          visible = { this.state.showingInfoWindow }
-        />
-          
-      </Map>
-    );
+      <div id='map'>
+        <div className='markers'></div>
+        <div id='infowindow'></div>
+      </div>
+    )
   }
 }
-export default GoogleApiWrapper({
-    key: ('AIzaSyDVCA3WbyUDIxb9PCdD4Nnt8OEOtG8Ajcg')
-   
-})(GMap);
+
+export default Map

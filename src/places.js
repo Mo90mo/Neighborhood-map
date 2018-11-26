@@ -18,3 +18,62 @@ class MapContainer extends Component {
 }
 
 export default MapContainer;
+
+{this.props.initialList.map(item => (
+     	<Marker 
+     	key={item.name}
+     	className='marker'
+      	onClick={this.onMarkerClick}
+      	name={item.name} 
+      	position={item.position}
+      	cat={item.cat} />
+    	 ))}
+
+// <Marker 
+      // className='marker'
+      // onClick={this.onMarkerClick}
+      // name={'Anne&Max Amsterdam Zuid'} 
+      // position={{lat: 52.3519133, lng: 4.8538804}}
+      // cat={'cafè'}
+      // />
+      // <Marker 
+      // className='marker'
+      // onClick={this.onMarkerClick}
+      // name={'Dignita VondelPark'} 
+      // position={{lat: 52.351852, lng: 4.857204}}
+      // cat={'cafè'}
+
+      // />
+      // <Marker 
+      // className='marker'
+      // onClick={this.onMarkerClick}
+      // name={'ROOTS'} 
+      // position={{lat: 52.3533437, lng: 4.8535822}}
+      // cat={'cafè'}
+
+      // />
+
+
+      	{initialList.map(item => (
+      			<Marker 
+     		key={item.name}
+     		className='marker'
+      		onClick={this.onMarkerClick}
+      		name={item.name} 
+      		position={item.position}
+      		cat={item.cat} />))}
+
+
+
+       <InfoWindow 
+       marker={this.state.clickedMarker}
+       visible={this.state.showInfo}
+       onClose={this.onInfoWindowClose}>
+            <div>
+              <h1>{this.state.selectedPlace.name}</h1>
+            </div>
+        </InfoWindow>
+      </Map>
+    );
+  }
+}

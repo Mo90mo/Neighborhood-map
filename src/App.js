@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
-import MapContainer from './Map.js';
 
+import Map from './MapContainer.js'
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    this.handleSearch = this.handleSearch.bind(this)
+  constructor() {
+    super();
     this.state = {
+      order: 'out',
       initialList: [
         {
           name:'Dignita Vondelpark',
           position: {lat: 52.351852, lng: 4.857204},
-          cat: 'res',
+          cat: 'res'
         }, 
         { 
           name: 'Roots',
@@ -23,13 +23,20 @@ class App extends Component {
           name: 'Anne&Max Amsterdam Zuid',
           position: {lat: 52.3519133, lng: 4.8538804},
           cat: 'res'
-        } 
+        },
+        {
+          name: 'Gustatio',
+          position: {lat: 52.3583046, lng: 4.8533045},
+          cat: 'res'
+        }
       ],
       filteredList: []
     }
+     this.handleSearch = this.handleSearch.bind(this);
   }
   componentDidMount() {
     this.setState({filteredList: this.state.initialList});
+    
   }
   handleSearch(e) {
     var updatedList = this.state.initialList;
@@ -37,6 +44,7 @@ class App extends Component {
       return item.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1;
     }));
     this.setState({filteredList: updatedList});
+    
   }
   render() {
     return (
@@ -50,18 +58,21 @@ class App extends Component {
           onChange={this.handleSearch}
         ></input>
         <div className='map-container'>
-          <MapContainer />
+       
+         <Map />
+          
         </div>
         <div className='list'>
           <ul className='res-list' >
             {this.state.filteredList.map((item) => {
-              return (<li key={item.name}>{item.name}</li>)
+              return (
+              <li key={item.name}>{item.name}</li>)
             })}
           </ul>
           <ul className='sup-list'>
             <li></li>
           </ul>
-        </div>  
+        </div> 
       </div>
     );
   }

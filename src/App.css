@@ -51,6 +51,9 @@ ul {
   	grid-row-end: 6;
 
 }
+#map {
+  height: 100%;
+}
 .marker:hover {
 	color: green;
 }
