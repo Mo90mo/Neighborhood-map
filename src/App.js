@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-
-import Map from './MapContainer.js'
+import Map from './MapContainer.js';
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       order: 'out',
       initialList: [
@@ -31,7 +30,7 @@ class App extends Component {
         }
       ],
       filteredList: []
-    }
+    };
      this.handleSearch = this.handleSearch.bind(this);
   }
   componentDidMount() {

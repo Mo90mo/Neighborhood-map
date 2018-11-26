@@ -9,7 +9,7 @@ class Map extends Component {
   constructor(props){
     super(props);
     this.state = {
-      list: [markers],
+      list: [],
     }
   }
   componentDidMount() {
@@ -20,6 +20,7 @@ class Map extends Component {
     });
     let infowindow = new google.maps.InfoWindow();
     let service = new google.maps.places.PlacesService(map);
+   
     let request = {
       location: {lat: 52.370216, lng: 4.895168},
       radius: 1500,
@@ -32,10 +33,13 @@ class Map extends Component {
         for (var i = 0; i < results.length; i += 1 ) {
           markers.push(results[i]);
           addMarker(results[i]);
+         
+          
         }
       }
     }
     service.nearbySearch(request, callback)
+
     function addMarker(place) {
       var marker = new google.maps.Marker({
         map: map,
@@ -45,17 +49,17 @@ class Map extends Component {
         infowindow.setContent(place.name);
         infowindow.open(map, this);
       });
-    }
-    console.log(this.state.list)
+    } 
+    
   }
+  
   render() {
+
     return (
       <div id='map'>
-        <div className='markers'></div>
-        <div id='infowindow'></div>
       </div>
     )
   }
 }
 
-export default Map
+export default Map;
