@@ -1,65 +1,87 @@
 import React, { Component } from 'react';
 import './App.css';
+
 /* global google */ 
-
-
-let markers = [];
+let map;
 
 class Map extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      list: [],
-    }
-  }
-  componentDidMount() {
-    console.log(this.props.initialList)
-    let map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 52.370216, lng: 4.895168},
-      zoom: 13,
-    });
-    let infowindow = new google.maps.InfoWindow();
-    let service = new google.maps.places.PlacesService(map);
-   
-    let request = {
-      location: {lat: 52.370216, lng: 4.895168},
-      radius: 1500,
-      type: ['store'|| 'cafe'|| 'restaurant'|| 'supermarket' || 'concept store' ],
-      keyword: ['vegan'|| 'organic' ||'vegetarian' || 'green' || 'sustainable' || 'bio']
-    };
-    function callback(results, status) {
-      console.log(status, results);
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        for (var i = 0; i < results.length; i += 1 ) {
-          markers.push(results[i]);
-          addMarker(results[i]);
-         
+  componentDidUpdate(prevProps,prevState) {
+    if(prevProps.venues !== this.props.venues) {
+      let venues = this.props.venues;
+      let map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 52.3791316, lng: 4.8980833},
+        zoom: 12,
+        styles: [
+          {'featureType': 'all',
+          'elementType': 'all',
+          'stylers': [
+              {'saturation': -50}
+            ]
+          }
+        ]
+      });
+     
+      for( var i = 0; i < venues.length; i += 1) {
+        var marker = new google.maps.Marker({
+          id: venues[i].venue.id,
+          map: map,
+          position: {lat: venues[i].venue.location.lat, lng: venues[i].venue.location.lng},
+          animation: google.maps.Animation.DROP,
+      });
+        var infowindow = new google.maps.InfoWindow();
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(i);
+            infowindow.open(map,this);
+          }
+        })(this,venues[i].venue.name + ' - ' + venues[i].venue.location.address));
+       
+      //   google.maps.event.addListener(marker, 'click', (function handleListMarkers(marker,i){
+      //     return function() {
+      //       var updatedList = venues;
+      // updatedList = updatedList.filter((item => {
+      //   return item.venue.id.search(i) !== -1;
+      //  }));
+      //   console.log(updatedList)
+      //     }
           
-        }
-      }
-    }
-    service.nearbySearch(request, callback)
+      //   })(this, venues[i].venue.id));
+      
+      // google.maps.event.addListener(marker, 'click', toggleBounce(this))
+//       function toggleBounce(marker) {
 
-    function addMarker(place) {
-      var marker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location  
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(place.name);
-        infowindow.open(map, this);
-      });
-    } 
-    
+//     if (marker.getAnimation() !== null) {
+//       marker.setAnimation(null);
+//     } else {
+//       marker.setAnimation(google.maps.Animation.BOUNCE);
+//     }
+// }
+
+            
+      }
+      // google.maps.event.addListener(marker, 'click', (function(marker, i) {
+      //   return function(marker,i) {
+      //     var selectedMarker = venues;
+      //   selectedMarker = selectedMarker.filter((item => {
+      //     return item.venue.id.search(i) !== -1;
+      //   }))
+      //   console.log(selectedMarker)
+      //   // this.props.action(this, selectedMarker.venue.id); 
+      //  }(this)})(this,marker.id))
+        
+        
+    }
+
   }
   
+  
   render() {
-
     return (
-      <div id='map'>
+      <div id='map' aria-label='Map of Amsterdam' role='application'>
       </div>
-    )
+     )
   }
 }
+
 
 export default Map;
