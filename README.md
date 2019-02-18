@@ -1,4 +1,4 @@
-####My neighborhood map
+#### My neighborhood map
 
 This project is part of the Front-end Web Developer Nanodegree Program from Udacity. 
 The goal of the project was building a single page responsive app using React.js.
